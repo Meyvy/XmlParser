@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include "include/linked_list.h"
+
+
 int main()
 {
-    printf("hello world");
+    return 0;
 }
