@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UFT-8"?>
+<system ??>
+
+    <!-- definiton node 0 -->
+    <node>
+        "dsadsad" " sdsa"
+        <name>are</name>
+        dasdsadasdadasd
+        <id>0</id>
+        <to>2</to>
+    </node>
+    <!-- definiton node 1 -->
+        <name>mmd</name>
+        <id>1</id>
+        <to>2</to>
+    <node>
+        <name>mmd</name>
+        <id>3</id>
+        <to>4</to>
+    </node>
+</system>
