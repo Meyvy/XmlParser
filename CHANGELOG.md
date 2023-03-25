@@ -1,0 +1,4 @@
+- added the parser and the graph for routing
+- added the lexical analyser and parser data strcuture headers
+- added the linked list. corrected the makefile and did the first build
+- created the file structure and makefile forgot to add the gitkeep to directories.
