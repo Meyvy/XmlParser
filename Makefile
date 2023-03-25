@@ -18,7 +18,7 @@ OBJECTS=$(foreach D,$(CFILES),$(patsubst %.c,$(ODIR)%.o,$(shell basename $(D))))
 all: $(FINAL)
 
 $(FINAL) : $(OBJECTS)
-	$(CC) -o $@ $^
+	$(CC) -o   $@ $^
 
 $(ODIR)%.o :: $(MAINDIR)%.c 
 	$(CC) $(DEPFLAGS) -c -o $@ $<

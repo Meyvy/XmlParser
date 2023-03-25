@@ -1,60 +1,35 @@
 #pragma once
 
+// stuff needed for creating and validating the xml tree are declared here
+
 #include "util.h"
-#include "linked_list.h"
+#include "ds.h"
+#include "xml_tokenizer.h"
 
-typedef struct XmlDocument
-{
-    char *source;
-    char *data;
-    uint64_t size;
-} XmlDocument;
+// functions for creating the xml tree from the tokens
 
-XmlDocument *xml_factory();
-void free_xml(XmlDocument **);
-State load_xml(XmlDocument *, char *);
+XmlAttribute *get_attribute(Node **);
+XmlAttributeList *get_attributes(Node **, State);
+void add_meta_line(Node *, Node **);
+void append_to_body_xml_node(XmlNode *, char *);
+void handle_new_start_tag(Node **, Node **, Node **);
+void handle_new_end_tag(Node **, Node **, Node **);
+void handle_xml_node_body(Node *, Node *, Node **);
+XmlTree *build_xml_tree(XmlDocument *);
 
-typedef struct XmlAttribute
-{
-    char *name;
-    char *value;
-} XmlAttribute;
+// functions for validating the parsed tree of the setting
 
-XmlAttribute *xml_attribute_factory();
-void free_xml_attribute(XmlAttribute **);
+State check_port_node(Node *);
+State check_node_node(Node *);
+State check_system_node(Node *);
+State check_root_node(Node *);
+State validate_tree(XmlTree *);
 
-typedef struct XmlAttributeList
-{
-    LinkedList *xml_attributes;
-} XmlAttributeList;
+// function for getting the setting graph from the xml tree
 
-XmlAttributeList *xml_attribute_list_factory();
-void add_xml_attribute_list(XmlAttributeList *, XmlAttribute *);
-void free_xml_attribute_list(XmlAttributeList **);
-
-typedef struct XmlNode XmlNode;
-
-typedef struct XmlNodeList
-{
-    LinkedList *xml_nodes;
-} XmlNodeList;
-
-XmlNodeList *xml_node_list_list_factory();
-void add_xml_node_list(XmlNodeList *, XmlNode *);
-void free_xml_node_list(XmlNodeList **);
-
-typedef struct XmlNode
-{
-    char *name;
-    char *body;
-    XmlAttributeList *attributes;
-    XmlNodeList *children;
-} XmlNode;
-
-XmlNode *xml_node_factory();
-void free_xml_node(XmlNode **);
-
-typedef struct XmlTree
-{
-    XmlNode *root;
-} XmlTree;
+uint64_t get_node_id(XmlNode *);
+XmlNode *get_node_port(XmlNode *);
+State check_node_if_seen(Graph *, uint64_t);
+void add_node_route(Graph *, XmlNode *);
+void add_setting_to_graph(Graph *, XmlNode *);
+Graph *get_setting_from_xml_tree(XmlTree *);

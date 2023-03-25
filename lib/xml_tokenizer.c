@@ -1,33 +1,11 @@
 #include "../include/xml_tokenizer.h"
 
-Token *token_factory()
-{
-  Token *token = (Token *)malloc(sizeof(Token));
-  token->type = NO_TOK;
-  token->value = NULL;
-  return token;
-}
-
-void free_token(Token *token)
-{
-  if (token == NULL)
-  {
-    return;
-  }
-
-  if (token->value != NULL)
-  {
-    free(token->value);
-  }
-  free(token);
-}
-
 State check_symbol_is_valid(char symbol)
 {
 
-  char allowed_symbols[] = {EQUAL, LEFT_ANGLE, RIGHT_ANGLE, SLASH,
-                            STRING_SYM, EXCLAMATION, SPACE, QUESTION,
-                            LINE_BREAK, END};
+  char allowed_symbols[] = {EQUAL, LEFT_ANGLE, RIGHT_ANGLE,
+                            STRING_SYM, EXCLAMATION, SPACE,
+                            LINE_BREAK, END, QUESTION, HYPHEN};
 
   if (isalnum(symbol))
   {
@@ -172,12 +150,12 @@ TokenType get_string_tok(char *data, uint64_t *cur, char *value)
     (*cur)++;
     buff[index] = END;
     strcpy(value, buff);
-    return QUOTED_STRING;
+    return QUOTED_STRING_TOK;
   }
   else
   {
     while (data[*cur] != END && data[*cur] != SPACE &&
-           data[*cur] != LINE_BREAK && isalnum(data[*cur]))
+           data[*cur] != LINE_BREAK && (isalnum(data[*cur]) || data[*cur] == HYPHEN))
     {
       if (index > MAX_STRING_TOK_VALUE_SIZE - 2)
       {
@@ -238,36 +216,6 @@ Token *next_token(char *data, uint64_t *cur)
   return token;
 }
 
-TokenList *token_list_factory()
-{
-  TokenList *token_list = (TokenList *)malloc(sizeof(TokenList));
-  token_list->tokens = linked_list_factory();
-  return token_list;
-}
-
-void add_token_list(TokenList *token_list, Token *token)
-{
-  Node *node = node_factory();
-  node->data = (void *)token;
-  add_linked_list_tail(token_list->tokens, node);
-}
-
-void free_token_list(TokenList **token_list)
-{
-  if (*token_list == NULL)
-  {
-    return;
-  }
-
-  if ((*token_list)->tokens != NULL)
-  {
-    free_linked_list(&(*token_list)->tokens, free_token);
-  }
-
-  free(*token_list);
-  *token_list = NULL;
-}
-
 TokenList *get_tokens(char *data)
 {
   uint64_t cur = 0;
@@ -277,16 +225,17 @@ TokenList *get_tokens(char *data)
   while (1)
   {
     token = next_token(data, &cur);
-    if (token->type == END_TOK)
-    {
-      break;
-    }
+
     if (token->type == INVALID_TOK)
     {
       error_handle("invalid token in the input");
     }
 
     add_token_list(token_list, token);
+    if (token->type == END_TOK)
+    {
+      break;
+    }
   }
 
   return token_list;
